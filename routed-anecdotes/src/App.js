@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
+import  { useField } from './hooks/index'
 import {
   BrowserRouter as Router,
   Switch, Route, Link, Redirect, useRouteMatch, useParams
@@ -28,7 +29,9 @@ const Menu = (props) => {
            <Anecdote anecdotes={props.anecdotes} />
         </Route>
         <Route path="/create">
-          <CreateNew addNew={props.addNew} setNotification={props.setNotification}/> 
+          <CreateNew addNew={props.addNew} setNotification={props.setNotification}
+           contentA={props.contentA} authorA={props.authorA} infoA={props.infoA}
+           resetA={props.resetA} /> 
         </Route>
         <Route path="/about">
           <About />
@@ -118,26 +121,118 @@ const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
+  
+  //const contentA = props.contentA
+  //const authorA = props.authorA
+  //const infoA = props.infoA
+  //const resetA = props.resetA
+  //const contentA = useField('text')
+  //const authorA = useField('text')
+  //const infoA = useField('text')
+  //const resetA = useField('button')
+  //if(contentA.value) console.log("createNew content ", contentA.value)
+  //if(authorA.value) console.log("createNew author ", authorA.value)
+  //if(infoA.value) console.log("createNew info ", infoA.value)
+  //if(resetA.value) console.log("createNew reset ", resetA.value)
+  //const author = useField('text')
+  //const info = useField('text')
+  //const resetA = (e) =>{
+    //form.reset()
+  //  console.log("reset ")
+    //useField('')
+    // return(
+    //<Redirect to="/create" ></Redirect>
+    //)
+  //}
+  //const onClick = () => {
 
+  const contentA = useField('text')
+  const authorA = useField('text')
+  const infoA = useField('text')
+    
+  
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
-      votes: 0
-    })
-    props.setNotification(`Anecdote: ${content} added`)
-    setTimeout(() => props.setNotification(''), 10000) // 10 sec
+    console.log("createNew handleSubmit e ", e.target.text)
+    
+    //}
+    
+   // console.log("createNew content ", contentA.field.value)
+    //if(contentA.value){
+      props.addNew({
+        content: contentA.field.value,
+        author: authorA.field.value,
+        info: infoA.field.value,
+        votes: 0
+      })
+      props.setNotification(`Anecdote: ${contentA.field.value} added`)
+      resetA()
+      setTimeout(() => props.setNotification(''), 10000) // 10 sec
+    }
+
+    const resetA = () => {
+    console.log("createNew click resetA")
+    //props.contentA.reset()
+    //props.authorA.reset()
+    //props.infoA.reset()
+    contentA.reset()
+    authorA.reset()
+    infoA.reset()
+
+
+    //App()
+   
+     //contentA.reset
   }
+    //}
+    //<input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+    //<input type={content.type}
+    //             value={content.value}
+    //             onChange={content.onChange}
+    ///>
+  //}
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input {...contentA.field}
+          />
+        </div>
+        <div>
+          author
+          <input {...authorA.field} />
+        </div>
+        <div>
+          url for more info
+          <input {...infoA.field} />
+        </div>
+        <button>create</button>
+        <input type="button" onClick={() => resetA()} value="reset" />
+                
+      </form>
+    </div>
+  )
+}
+//<input {...props.resetA} onClick={() => resetA()} value="reset" />
+//<input {...props.resetA} onClick={() => resetA()} value="reset" />
+//<input type="button" value="reset" onClick={() => click()} />
+//<input type="button" value="reset" onClick={() => click()} />
+//<input type="button" {...resetA} value="reset"/>
+// <button type="button" onClick={() => resetA({...reset})}>resetA</button>
+//<input type="submit" value="Submit" />
+//<button type="button" onClick={() => reset(defaultValues)}>reset</button>
+/*
+ return (
+    <div>
+      <h2>create a new anecdote</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          content
+          <input {...contentA}
+          />
         </div>
         <div>
           author
@@ -151,8 +246,7 @@ const CreateNew = (props) => {
       </form>
     </div>
   )
-}
-
+*/
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -173,6 +267,12 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
   const [anecdo, setAnecdo] = useState('')
+
+  //const contentA = useField('text')
+  //const authorA = useField('text')
+  //const infoA = useField('text')
+  //const resetA = useField('button')
+  
   
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
@@ -192,11 +292,20 @@ const App = () => {
 
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
   }
+  //contentA={contentA}
+  //    authorA={authorA}
+  //    infoA={infoA}
+  //    resetA={resetA}
+  //resetA={resetA}
+  //contentA={contentA}
+  //    authorA={authorA}
+  //    infoA={infoA}
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu anecdotes={anecdotes} addNew={addNew} anecdoteById={anecdoteById} anecdo={anecdo} setAnecdo={setAnecdo} 
-      notification={notification} setNotification={setNotification} />
+      notification={notification} setNotification={setNotification}
+      />
       <Footer />
     </div>
   )
